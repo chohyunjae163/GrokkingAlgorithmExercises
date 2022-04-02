@@ -1,0 +1,71 @@
+#include <iostream>
+#include <list>
+
+
+std::list<int> quickSort(const std::list<int>&);
+
+int main()
+{
+
+    std::list myList { 97,121,60,84,33,15,10,94,75,100 };
+    
+    auto sortedList = quickSort(myList);
+    
+    for(const auto element : sortedList)
+    {
+        std::cout << element << " ";
+    }
+    return 0;
+}
+
+void partition(int pivot, const std::list<int>& list, std::list<int>& outSmaller, std::list<int>& outLarger)
+{
+    for(const int element : list)
+    {
+        if(element > pivot)
+        {
+            outLarger.push_back(element);
+        }
+        else
+        {
+            outSmaller.push_back(element);
+        }
+    }
+}
+
+std::list<int> quickSort(const std::list<int>& list)
+{
+    //pivot is the first element.
+    if(list.size() < 2)
+    {
+        return list;
+    }
+    else if(list.size() == 2)
+    {
+        if(list.front() > list.back())
+        {
+            std::list sorted { list.back() , list.front() };
+            return sorted;
+        }
+        return list;
+    }
+    else
+    {
+        
+        //partition
+        std::list<int> OutSmaller , OutLarger;
+        std::list<int> NoPivotList(++list.begin(),list.end());
+        partition(list.front(),NoPivotList, OutSmaller,OutLarger);
+        
+        //combine the whole thing. smaller array + pivot + larger array
+        std::list<int> newList;
+        newList.merge(quickSort(OutSmaller));
+        newList.push_back(list.front());
+        newList.merge(quickSort(OutLarger));
+        return newList;
+    }
+}
+
+
+
+
